@@ -1,15 +1,20 @@
+"""Tkinter graphical user interface for the Mini Store Management System.
+
+This module provides the presentation layer for interacting with the store
+business logic through a desktop graphical interface.
+"""
+
 import os
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox, ttk
 
 from src.mini_store_management_system import (
-    Store,
-    Product,
     Customer,
     Inventory,
+    Product,
+    Store,
     StorePersistence,
 )
-
 
 # =========================================================
 # MAIN APPLICATION
@@ -17,7 +22,17 @@ from src.mini_store_management_system import (
 
 class StoreApp(tk.Tk):
 
+    """Provide the graphical application interface for the store system.
+
+    The application coordinates user interaction with the existing store
+    business logic without duplicating the underlying operations.
+    """
+
     def __init__(self):
+        """Initialize the graphical store management application.
+        :return: ``None``.
+        """
+
         super().__init__()
 
         self.title("Mini Store Management System")
@@ -45,6 +60,10 @@ class StoreApp(tk.Tk):
 
     def create_style(self):
 
+        """Configure the visual styles used by the application.
+        :return: ``None``.
+        """
+
         style = ttk.Style(self)
 
         try:
@@ -68,6 +87,10 @@ class StoreApp(tk.Tk):
         )
 
     def create_header(self):
+
+        """Create the application header and persistence controls.
+        :return: ``None``.
+        """
 
         header = ttk.Frame(self, padding=15)
         header.pack(fill="x")
@@ -104,6 +127,10 @@ class StoreApp(tk.Tk):
 
     def create_notebook(self):
 
+        """Create the main notebook and initialize the application tabs.
+        :return: ``None``.
+        """
+
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(
             fill="both",
@@ -119,6 +146,10 @@ class StoreApp(tk.Tk):
         self.create_reports_tab()
 
     def create_status_bar(self):
+
+        """Create the status bar used to display application messages.
+        :return: ``None``.
+        """
 
         self.status_var = tk.StringVar(
             value="Ready"
@@ -143,9 +174,18 @@ class StoreApp(tk.Tk):
 
     def set_status(self, message):
 
+        """Update the message displayed in the application status bar.
+        :param message: Message to display in the status bar.
+        :return: ``None``.
+        """
+
         self.status_var.set(message)
 
     def load_store(self):
+
+        """Load the persisted store data and fall back to an empty store on load errors.
+        :return: The loaded :class:`Store` instance.
+        """
 
         try:
             return self.persistence.load()
@@ -160,6 +200,10 @@ class StoreApp(tk.Tk):
             return Store()
 
     def save_store(self):
+
+        """Save the current store state through the persistence layer.
+        :return: ``None``.
+        """
 
         try:
 
@@ -183,6 +227,10 @@ class StoreApp(tk.Tk):
 
     def reload_store(self):
 
+        """Reload the store data from persistence and refresh the interface.
+        :return: ``None``.
+        """
+
         try:
 
             self.store = self.persistence.load()
@@ -205,6 +253,10 @@ class StoreApp(tk.Tk):
             )
 
     def on_close(self):
+
+        """Handle application shutdown and optionally save the current store.
+        :return: ``None``.
+        """
 
         answer = messagebox.askyesnocancel(
             "Exit",
@@ -232,6 +284,10 @@ class StoreApp(tk.Tk):
 
     def refresh_all(self):
 
+        """Refresh all data views and order-selection controls.
+        :return: ``None``.
+        """
+
         self.refresh_products()
         self.refresh_customers()
         self.refresh_inventory()
@@ -245,6 +301,10 @@ class StoreApp(tk.Tk):
     # =====================================================
 
     def create_products_tab(self):
+
+        """Create the Products tab and its controls.
+        :return: ``None``.
+        """
 
         tab = ttk.Frame(
             self.notebook,
@@ -378,6 +438,10 @@ class StoreApp(tk.Tk):
 
     def refresh_products(self):
 
+        """Refresh the products table using the current store data.
+        :return: ``None``.
+        """
+
         if not hasattr(self, "products_tree"):
             return
 
@@ -400,6 +464,10 @@ class StoreApp(tk.Tk):
 
     def get_selected_product_id(self):
 
+        """Return the ID of the currently selected product.
+        :return: The selected item identifier, or ``None`` when no selection exists.
+        """
+
         selection = self.products_tree.selection()
 
         if not selection:
@@ -417,6 +485,10 @@ class StoreApp(tk.Tk):
         return int(values[0])
 
     def add_product_dialog(self):
+
+        """Open a dialog for adding a new product.
+        :return: ``None``.
+        """
 
         dialog = tk.Toplevel(self)
 
@@ -470,6 +542,10 @@ class StoreApp(tk.Tk):
             fields[key] = entry
 
         def submit():
+
+            """Handle a user-interface operation.
+            :return: ``None``.
+            """
 
             name = fields["name"].get().strip()
             category = fields["category"].get().strip()
@@ -532,6 +608,10 @@ class StoreApp(tk.Tk):
         )
 
     def update_product_dialog(self):
+
+        """Open a dialog for updating the selected product.
+        :return: ``None``.
+        """
 
         product_id = self.get_selected_product_id()
 
@@ -606,6 +686,10 @@ class StoreApp(tk.Tk):
 
         def submit():
 
+            """Handle a user-interface operation.
+            :return: ``None``.
+            """
+
             try:
 
                 self.store.update_product(
@@ -647,6 +731,10 @@ class StoreApp(tk.Tk):
 
     def remove_product(self):
 
+        """Remove the selected product after user confirmation.
+        :return: ``None``.
+        """
+
         product_id = self.get_selected_product_id()
 
         if product_id is None:
@@ -686,6 +774,10 @@ class StoreApp(tk.Tk):
     # =====================================================
 
     def create_customers_tab(self):
+
+        """Create the Customers tab and its controls.
+        :return: ``None``.
+        """
 
         tab = ttk.Frame(
             self.notebook,
@@ -781,6 +873,10 @@ class StoreApp(tk.Tk):
 
     def refresh_customers(self):
 
+        """Refresh the customers table using the current store data.
+        :return: ``None``.
+        """
+
         if not hasattr(self, "customers_tree"):
             return
 
@@ -803,6 +899,10 @@ class StoreApp(tk.Tk):
 
     def get_selected_customer_id(self):
 
+        """Return the ID of the currently selected customer.
+        :return: The selected item identifier, or ``None`` when no selection exists.
+        """
+
         selection = self.customers_tree.selection()
 
         if not selection:
@@ -822,6 +922,10 @@ class StoreApp(tk.Tk):
         return int(values[0])
 
     def add_customer_dialog(self):
+
+        """Open a dialog for adding a new customer.
+        :return: ``None``.
+        """
 
         dialog = tk.Toplevel(self)
 
@@ -876,6 +980,10 @@ class StoreApp(tk.Tk):
 
         def submit():
 
+            """Handle a user-interface operation.
+            :return: ``None``.
+            """
+
             try:
 
                 customer = Customer(
@@ -920,6 +1028,10 @@ class StoreApp(tk.Tk):
         )
 
     def update_customer_dialog(self):
+
+        """Open a dialog for updating the selected customer.
+        :return: ``None``.
+        """
 
         customer_id = self.get_selected_customer_id()
 
@@ -990,6 +1102,10 @@ class StoreApp(tk.Tk):
 
         def submit():
 
+            """Handle a user-interface operation.
+            :return: ``None``.
+            """
+
             try:
 
                 self.store.update_customer(
@@ -1033,6 +1149,10 @@ class StoreApp(tk.Tk):
 
     def remove_customer(self):
 
+        """Remove the selected customer after user confirmation.
+        :return: ``None``.
+        """
+
         customer_id = self.get_selected_customer_id()
 
         if customer_id is None:
@@ -1070,6 +1190,10 @@ class StoreApp(tk.Tk):
     # =====================================================
 
     def create_inventory_tab(self):
+
+        """Create the Inventory tab and its stock controls.
+        :return: ``None``.
+        """
 
         tab = ttk.Frame(
             self.notebook,
@@ -1166,6 +1290,10 @@ class StoreApp(tk.Tk):
 
     def refresh_inventory(self):
 
+        """Refresh the inventory table and display stock status.
+        :return: ``None``.
+        """
+
         if not hasattr(self, "inventory_tree"):
             return
 
@@ -1197,6 +1325,10 @@ class StoreApp(tk.Tk):
 
     def get_inventory_product_id(self):
 
+        """Return the product ID of the selected inventory item.
+        :return: The selected item identifier, or ``None`` when no selection exists.
+        """
+
         selection = self.inventory_tree.selection()
 
         if not selection:
@@ -1216,6 +1348,10 @@ class StoreApp(tk.Tk):
         return int(values[0])
 
     def add_inventory_dialog(self):
+
+        """Open a dialog for creating inventory for a product.
+        :return: ``None``.
+        """
 
         products = [
             f"{product.id} - {product.name}"
@@ -1295,6 +1431,10 @@ class StoreApp(tk.Tk):
 
         def submit():
 
+            """Handle a user-interface operation.
+            :return: ``None``.
+            """
+
             try:
 
                 product_id = int(
@@ -1352,6 +1492,13 @@ class StoreApp(tk.Tk):
         success_message
     ):
 
+        """Open a dialog for performing a stock operation.
+        :param operation: Stock operation to perform, such as add, remove, or set.
+        :param title: Title used for the stock-operation dialog.
+        :param success_message: Message displayed after a successful stock operation.
+        :return: ``None``.
+        """
+
         product_id = self.get_inventory_product_id()
 
         if product_id is None:
@@ -1394,6 +1541,10 @@ class StoreApp(tk.Tk):
         )
 
         def submit():
+
+            """Handle a user-interface operation.
+            :return: ``None``.
+            """
 
             try:
 
@@ -1454,6 +1605,10 @@ class StoreApp(tk.Tk):
 
     def add_stock_dialog(self):
 
+        """Open the dialog for adding stock to the selected product.
+        :return: ``None``.
+        """
+
         self.stock_operation_dialog(
             "add",
             "Add Stock",
@@ -1462,6 +1617,10 @@ class StoreApp(tk.Tk):
 
     def remove_stock_dialog(self):
 
+        """Open the dialog for removing stock from the selected product.
+        :return: ``None``.
+        """
+
         self.stock_operation_dialog(
             "remove",
             "Remove Stock",
@@ -1469,6 +1628,10 @@ class StoreApp(tk.Tk):
         )
 
     def set_stock_dialog(self):
+
+        """Open the dialog for setting the stock quantity of the selected product.
+        :return: ``None``.
+        """
 
         self.stock_operation_dialog(
             "set",
@@ -1481,6 +1644,10 @@ class StoreApp(tk.Tk):
     # =====================================================
 
     def create_orders_tab(self):
+
+        """Create the Orders tab for viewing and creating orders.
+        :return: ``None``.
+        """
 
         tab = ttk.Frame(
             self.notebook,
@@ -1724,6 +1891,10 @@ class StoreApp(tk.Tk):
 
     def refresh_orders(self):
 
+        """Refresh the orders table using the current store data.
+        :return: ``None``.
+        """
+
         if not hasattr(self, "orders_tree"):
             return
 
@@ -1749,6 +1920,10 @@ class StoreApp(tk.Tk):
 
     def refresh_order_customer_combobox(self):
 
+        """Refresh the customer selector used during order creation.
+        :return: ``None``.
+        """
+
         if not hasattr(
             self,
             "order_customer_combo"
@@ -1770,6 +1945,10 @@ class StoreApp(tk.Tk):
 
     def refresh_order_product_combobox(self):
 
+        """Refresh the product selector used during order creation.
+        :return: ``None``.
+        """
+
         if not hasattr(
             self,
             "order_product_combo"
@@ -1790,6 +1969,10 @@ class StoreApp(tk.Tk):
             self.order_product_combo.set("")
 
     def add_order_item(self):
+
+        """Add the selected product and quantity to the current order.
+        :return: ``None``.
+        """
 
         if not self.order_customer_combo.get():
 
@@ -1866,6 +2049,10 @@ class StoreApp(tk.Tk):
 
     def remove_order_item(self):
 
+        """Remove the selected item from the current order.
+        :return: ``None``.
+        """
+
         selection = self.order_items_tree.selection()
 
         if not selection:
@@ -1883,6 +2070,10 @@ class StoreApp(tk.Tk):
 
     def clear_order_items(self):
 
+        """Clear all items from the current order being prepared.
+        :return: ``None``.
+        """
+
         self.current_order_items.clear()
 
         for item in self.order_items_tree.get_children():
@@ -1893,6 +2084,10 @@ class StoreApp(tk.Tk):
         )
 
     def submit_order(self):
+
+        """Validate and submit the current order through the store business logic.
+        :return: ``None``.
+        """
 
         customer_text = (
             self.order_customer_combo.get()
@@ -1961,6 +2156,10 @@ class StoreApp(tk.Tk):
 
     def get_selected_order_index(self):
 
+        """Return the zero-based index of the selected order.
+        :return: The selected item identifier, or ``None`` when no selection exists.
+        """
+
         selection = self.orders_tree.selection()
 
         if not selection:
@@ -1985,6 +2184,10 @@ class StoreApp(tk.Tk):
         return displayed_number - 1
 
     def show_selected_order(self):
+
+        """Display the details of the selected order.
+        :return: ``None``.
+        """
 
         order_index = self.get_selected_order_index()
 
@@ -2097,6 +2300,10 @@ class StoreApp(tk.Tk):
 
     def cancel_selected_order(self):
 
+        """Cancel the selected order after user confirmation.
+        :return: ``None``.
+        """
+
         order_index = self.get_selected_order_index()
 
         if order_index is None:
@@ -2134,6 +2341,10 @@ class StoreApp(tk.Tk):
     # =====================================================
 
     def create_reports_tab(self):
+
+        """Create the Reports tab and its report sections.
+        :return: ``None``.
+        """
 
         tab = ttk.Frame(
             self.notebook,
@@ -2180,6 +2391,10 @@ class StoreApp(tk.Tk):
         )
 
     def refresh_reports(self):
+
+        """Refresh sales, low-stock, and out-of-stock reports.
+        :return: ``None``.
+        """
 
         if not hasattr(
             self,
