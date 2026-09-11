@@ -37,3 +37,15 @@ My approach is to:
 6. Document decisions and improve the project
 
 Each project in this repository represents a step toward building stronger programming and software engineering skills.
+
+## 📂 Repository Structure
+
+```text
+python-learning/
+│
+├── mini_store_management_system/
+├── password_generator/
+├── python_2023_practices/
+├── LICENSE
+└── README.md
+```
