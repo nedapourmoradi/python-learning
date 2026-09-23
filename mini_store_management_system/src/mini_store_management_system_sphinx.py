@@ -6,7 +6,6 @@ store-level business operations, and persistence through a JSON file.
 
 import json
 
-
 # =========================================================
 # PRODUCT
 # =========================================================
@@ -962,7 +961,7 @@ class Store:
 
         for inventory in self.inventories:
 
-            if inventory.product == product:
+            if inventory.product.id == product.id:
                 return inventory
 
         return None

@@ -4,15 +4,14 @@ import tempfile
 import unittest
 
 from src.mini_store_management_system import (
-    Product,
     Customer,
     Inventory,
-    OrderItem,
     Order,
+    OrderItem,
+    Product,
     Store,
-    StorePersistence
+    StorePersistence,
 )
-
 
 # =========================================================
 # PRODUCT TESTS
@@ -1247,6 +1246,36 @@ class TestStoreInventory(unittest.TestCase):
 
         inventory2 = Inventory(
             self.product,
+            20
+        )
+
+        self.store.add_inventory(
+            inventory1
+        )
+
+        with self.assertRaises(ValueError):
+
+            self.store.add_inventory(
+                inventory2
+            )
+
+    def test_duplicate_inventory_same_product_id(self):
+
+        inventory1 = Inventory(
+            self.product,
+            10
+        )
+
+        another_product = Product(
+            "Another Mouse",
+            101,
+            "Accessory",
+            600000,
+            "Other Brand"
+        )
+
+        inventory2 = Inventory(
+            another_product,
             20
         )
 

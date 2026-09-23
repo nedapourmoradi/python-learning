@@ -628,7 +628,7 @@ class Store:
 
         for inventory in self.inventories:
 
-            if inventory.product == product:
+            if inventory.product.id == product.id:
                 return inventory
 
         return None
